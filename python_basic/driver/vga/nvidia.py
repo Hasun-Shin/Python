@@ -1,0 +1,1 @@
+print('vga nvidia!')
