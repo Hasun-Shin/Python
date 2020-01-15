@@ -43,5 +43,17 @@
 
 list  comprehension 형식
 
-람다 + list comprehension 합친 형식
+**람다 + list comprehension 합친 형식**
+
+```python
+def myfunc(numbers):
+ result = []
+ for number in numbers:
+ if number > 5:
+ result.append(number)
+ return result
+result = myfunc([2, 3, 4, 5, 6, 7, 8])
+print(result)
+
+```
 
