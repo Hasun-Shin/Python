@@ -1,0 +1,7 @@
+<p> 새 질문을 등록해주세요.</p>
+
+<form action="{% url 'index' %}" method=post>
+    {% csrf_token %}
+    <input type = "text" name="new">
+    <input type = "submit" value="insert">
+</form>

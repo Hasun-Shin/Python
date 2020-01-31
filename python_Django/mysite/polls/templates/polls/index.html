@@ -1,0 +1,20 @@
+{% load static %}
+
+<link rel='stylesheet' 
+href='{% static "polls/style.css"%}'>
+
+{% for question in latest_question_list %}
+<!-- <a href="/polls/{{ question.id }}/"> -->
+ 
+<a href = '{% url "detail" question.id %}'> <!--url 파일안의 디테일 name 을 가져오는 것.  -->
+<p>{{ question.question_text }}</p>
+
+</a>
+{% endfor %}
+
+<button onclick='move()'>새 질문 등록하러 가기</button>
+<script>
+ function move() {
+     location = '/polls/insert'
+ }
+</script>

@@ -329,3 +329,202 @@ def main(request):
      ```
 
      
+
+admin 관리자를 들어가려면
+
+다시 한 번 bash 창에
+
+ python manage.py makemigrations  입력
+
+python manage.py migrate 입력.
+
+하면 shop 이 자동으로 admin 에서 사용할 수 있도록 넣어지게 된다.  
+
+
+
+---------------------
+
+2번 방법을 이용해 봅시다. 기존 db를 장고에서 원하는 이름으로 바꿔치기함. 
+
+shop 원 데이터에서 컬럼명들을 models 에 다 씁니다. (shop_id = models.AutoField(primary_key=True)
+
+  shop_name = models.CharField(max_length=100, blank=True, null=True)...)
+
+장고에서 실행기능을 합니다. 
+
+`python manage.py makemigrations`
+
+하면 0002_shop.py 같은 파일이 생겨나게 된다. 
+
+그리고 python manage.py migrate 함. 
+
+django 에서는 shop.py 가 생겨났는데 빈깡통들임.
+
+그래서 실제 데이터는 mydb 에 있기 때문에 다시 settings.py 에 들어가서 mydb로 바꿔줌.
+
+이때 django 의 shop 과 mydb 의 shop 이름이 같아야함. 
+
+--------------------------
+
+### 투표 
+
+
+
+models 만들기. 
+
+```python
+from django.db import models
+
+
+class Question(models.Model):
+ question_text = models.CharField(max_length=200)
+ pub_date = models.DateTimeField('date published')
+class Choice(models.Model):
+ question = models.ForeignKey(Question, on_delete=models.CASCADE)
+# 외래키를 지정할 때 클래스 자체 Question 을 불러 온다. 하나하나 컬럼명을 가지고 오지 않아도 됨. 
+ choice_text = models.CharField(max_length=200)
+ votes = models.IntegerField(default=0)
+```
+
+
+
+shell 에서 직접 db 수정해보자. 
+
+shell 접속 : python manage.py shell
+
+
+
+ORM 오브젝트와 모델을 연결해줌. 객체,클래스와 모델을 연결해줌. 
+
+```shell
+student@M150317 MINGW64 ~/python/python_Django/mysite (master)
+$ python manage.py shell
+Python 3.7.4 (default, Aug  9 2019, 18:34:13) [MSC v.1915 64 bit (AMD64)]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.11.1 -- An enhanced Interactive Python. Type '?' for help.
+
+In [1]:  from polls.models import *
+
+In [2]: Question.objects.all()
+Out[2]: <QuerySet []> # 아직 넣은 데이터가 없어서 비어 있음. 
+
+In [3]: from django.utils import timezone
+
+In [4]: q = Question(question_text="What's new?", pub_date=timezone.now())
+
+In [5]: q.save()
+
+In [6]: q.question_text = "What's up?" #"what's new" 를 "What's up"으로 바꿈.
+
+In [7]: q.save()
+
+In [8]: Question.objects.all()
+Out[8]: <QuerySet [<Question: Question object (1)>]>
+
+In [9]: Question.objects.all()[0].question_text
+Out[9]: "What's up?"
+
+In [11]: data = Question.objects.get(pk=1)
+
+In [12]: data.question_text = data.question_text + '?'
+
+In [13]: data.save()
+```
+
+
+
+```python
+In [15]: q.choice_set.create(choice_text='Not much', votes=0)
+Out[15]: <Choice: Choice object (1)>
+
+In [16]: Choice(choice_text='The sky', votes=0, question=q)
+Out[16]: <Choice: Choice object (None)>
+
+In [17]: Choice(choice_text='The sky', votes=0, question=q).save()
+
+In [18]: q.choice_set.create(choice_text='just hacking', votes=0)
+Out[18]: <Choice: Choice object (3)>
+
+
+
+NameError: name 'c' is not defined
+
+In [20]: c = Choice.objects.get(pk=2)
+
+In [21]: c.choice_text
+Out[21]: 'The sky'
+
+In [22]: c.question
+Out[22]: <Question: Question object (1)>
+
+In [23]: c.question.question_text
+Out[23]: "What's up??"
+
+In [24]: q.choice_set.all()
+Out[24]: <QuerySet [<Choice: Choice object (1)>, <Choice: Choice object (2)>, <Choice: Choice object (3)>]>
+
+In [25]: q.choice_set.all().choice_set_text
+
+
+```
+
+
+
+
+
+```python
+In [33]: q2 = Question(question_text="Test", pub_date=timezone.now())
+
+In [34]: q2.save()
+
+In [35]: q2 = Question.objects.get(pk=2)
+
+In [36]: Choice(choice_text = 'A', votes=0, question=q2).save()
+
+In [37]: Choice(choice_text = 'B', votes=0, question=q2).save()
+
+In [38]: q2.choice_set.all()
+Out[38]: <QuerySet [<Choice: Choice object (4)>, <Choice: Choice object (5)>]>
+
+In [39]: c2 = Choice.objects.get(id=4)
+
+In [40]: c2.choice_text
+Out[40]: 'A'
+
+In [41]: c2.question.question_text
+Out[41]: 'Test'
+
+    q2.choice_set.all()
+
+
+```
+
+
+
+----------
+
+{% csrf_token %}
+
+cross script . request f...?
+
+
+
+현재 4페이지 aaa2111 (외계어 같은 것 . 티켓을 발급해줌.)
+
+5페이지 클릭. 5페이지 요청 aaa2111 값을 같이 전송 (발급 받은 티켓을 가지고 요청)
+
+
+
+그런데 내가 파라미터를 바꾸어서 5페이지 요청. 예 : ''~~~ page=5' 
+
+즉, 부여 받은 값을 가지지 않고 파라미터 자체를 바꾸어서 페이지를 바꿈.
+
+이걸 방지하기 위해 파라미터 변조 방지를 해야함 !
+
+
+
+
+
+--------
+
+부트스트랩 적용

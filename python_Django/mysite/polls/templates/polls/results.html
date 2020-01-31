@@ -1,0 +1,6 @@
+<ol>
+{% for choice in results.choice_set.all|dictsort:'votes' reversed %}
+
+    <li>{{choice.choice_text}} : {{choice.votes}} </li>
+{% endfor %}
+</ol>
