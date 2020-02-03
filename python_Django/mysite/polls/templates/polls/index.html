@@ -3,6 +3,13 @@
 <link rel='stylesheet' 
 href='{% static "polls/style.css"%}'>
 
+<button onclick='move()'>새 질문 등록하러 가기</button>
+<script>
+ function move() {
+     location = '/polls/insert'
+ }
+</script>
+
 {% for question in latest_question_list %}
 <!-- <a href="/polls/{{ question.id }}/"> -->
  
@@ -12,9 +19,3 @@ href='{% static "polls/style.css"%}'>
 </a>
 {% endfor %}
 
-<button onclick='move()'>새 질문 등록하러 가기</button>
-<script>
- function move() {
-     location = '/polls/insert'
- }
-</script>

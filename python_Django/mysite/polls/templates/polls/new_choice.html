@@ -1,0 +1,7 @@
+<p> 새 보기를 작성해주세요.</p>
+
+<form action="{% url 'new_choice' %}" method=post>
+    {% csrf_token %}
+    <input type = "text" name="new_choice">
+    <input type = "submit" value="new_choice">
+</form>

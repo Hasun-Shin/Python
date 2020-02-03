@@ -15,9 +15,33 @@
  <input type="submit" value="투표">
 </form>
 
-<button onclick='move()'>투표결과 확인</button>
+<button onclick='move()' class="results">투표결과 확인</button>
+<script src = 'http://code.jquery.com/jquery-3.3.1.min.js'></script>
 <script>
- function move() {
-     location = '/polls/{{ question.id }}/results'
+    $('input:submit').click(function() {
+        $.ajax({
+            url : '/polls/{{question.id}}/vote/',
+            type: 'post',
+            data : {
+                'choice': $('[name=choice]').val()
+                'csrfmiddlewaretoken' : $('[name=csrfmiddlewaretoken]').val()
+                },
+            success : function(res){
+                alert('완료');
+
+            }
+        })
+        return false;
+    });
+  function move() {
+      location = '/polls/{{ question.id }}/results'
+ }
+</script>
+
+<br>
+<button onclick='move2()' class="new_choice ">새 보기 작성하기</button>
+<script>
+ function move2() {
+     location = '/polls/{{ question.id }}/new_choice'
  }
 </script>

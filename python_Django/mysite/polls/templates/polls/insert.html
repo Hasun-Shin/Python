@@ -1,7 +1,11 @@
-<p> 새 질문을 등록해주세요.</p>
+<p> 작성해주세요.</p>
 
 <form action="{% url 'index' %}" method=post>
     {% csrf_token %}
-    <input type = "text" name="new">
+
+    Question : <input type = "text" name="new">
+    <br>
+    보기 1 : <input type = "text" name="answer1"><br>
+    보기 2 : <input type = "text" name="answer2"><br>
     <input type = "submit" value="insert">
 </form>
